@@ -1,0 +1,25 @@
+# Build outputs
+bin/
+obj/
+
+# Visual Studio / Rider
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.rsuser
+
+# Logs and diagnostics
+*.log
+logs/
+
+# Local app configuration and secrets
+appsettings.*.local.json
+appsettings.Local.json
+*.pfx
+
+# EF / test artifacts
+TestResults/
+*.trx
+

@@ -1,0 +1,6 @@
+@RepairOps.API_HostAddress = http://localhost:5045
+
+GET {{RepairOps.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
