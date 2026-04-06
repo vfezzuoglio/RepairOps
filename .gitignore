@@ -24,3 +24,11 @@ appsettings.Development.json
 TestResults/
 *.trx
 
+# Frontend build output
+RepairOps.Web/node_modules/
+RepairOps.Web/dist/
+RepairOps.Web/.vite/
+RepairOps.Web/.eslintcache
+RepairOps.Web/coverage/
+RepairOps.Web/.env*
+

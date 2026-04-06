@@ -84,7 +84,8 @@ private AuthResponseDto GenerateToken(User user)
     {
         Token = new JwtSecurityTokenHandler().WriteToken(token),
         FullName = user.FullName,
-        Role = user.Role
+        Role = user.Role,
+        UserId = user.Id
     };
 }
 
