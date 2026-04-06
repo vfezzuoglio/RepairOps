@@ -17,6 +17,7 @@ logs/
 # Local app configuration and secrets
 appsettings.*.local.json
 appsettings.Local.json
+appsettings.Development.json
 *.pfx
 
 # EF / test artifacts
