@@ -3,6 +3,7 @@ import { useAuth } from './context/AuthContext';
 import LoginPage from './pages/auth/LoginPage';
 import RepairQueuePage from './pages/repairs/RepairQueuePage';
 import RepairDetailPage from './pages/repairs/RepairDetailPage';
+import InventoryPage from './pages/inventory/InventoryPage';
 
 const ProtectedRoute = ({ children }) => {
   const { user } = useAuth();
@@ -23,6 +24,11 @@ function App() {
         <RepairDetailPage />
       </ProtectedRoute>
 } />
+      <Route path="/inventory" element={
+        <ProtectedRoute>
+          <InventoryPage />
+        </ProtectedRoute>
+      } />
     </Routes>
   );
 }

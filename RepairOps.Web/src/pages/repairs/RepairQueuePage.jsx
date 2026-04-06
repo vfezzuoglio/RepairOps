@@ -23,47 +23,46 @@ function RepairQueuePage() {
 
   if (loading) return <p>Loading...</p>;
 
-  return (
-    <div style={{ padding: '20px' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <h2>Repair Queue</h2>
-        <div>
-          <span>Welcome, {user?.fullName}</span>
-          <button onClick={handleLogout} style={{ marginLeft: '10px' }}>
-            Logout
-          </button>
-        </div>
+return (
+  <div style={{ padding: '20px' }}>
+    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+      <h2>Repair Queue</h2>
+      <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+        <span>Welcome, {user?.fullName}</span>
+        <button onClick={() => navigate('/inventory')}>Inventory</button>
+        <button onClick={handleLogout}>Logout</button>
       </div>
-      <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Customer</th>
-            <th>Device</th>
-            <th>Issue</th>
-            <th>Status</th>
-            <th>Assigned To</th>
-          </tr>
-        </thead>
-        <tbody>
-          {tickets.map((ticket) => (
-            <tr
-              key={ticket.id}
-              onClick={() => navigate(`/repairs/${ticket.id}`)}
-              style={{ cursor: 'pointer' }}
-            >
-              <td>#{ticket.id}</td>
-              <td>{ticket.customerName}</td>
-              <td>{ticket.deviceBrand} {ticket.deviceModel}</td>
-              <td>{ticket.issueDescription}</td>
-              <td>{ticket.status}</td>
-              <td>{ticket.assignedUserName}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
     </div>
-  );
+    <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Customer</th>
+          <th>Device</th>
+          <th>Issue</th>
+          <th>Status</th>
+          <th>Assigned To</th>
+        </tr>
+      </thead>
+      <tbody>
+        {tickets.map((ticket) => (
+          <tr
+            key={ticket.id}
+            onClick={() => navigate(`/repairs/${ticket.id}`)}
+            style={{ cursor: 'pointer' }}
+          >
+            <td>#{ticket.id}</td>
+            <td>{ticket.customerName}</td>
+            <td>{ticket.deviceBrand} {ticket.deviceModel}</td>
+            <td>{ticket.issueDescription}</td>
+            <td>{ticket.status}</td>
+            <td>{ticket.assignedUserName}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+);
 }
 
 export default RepairQueuePage;
