@@ -42,6 +42,8 @@ builder.Services.AddScoped<IInventoryService, InventoryService>();
 builder.Services.AddScoped<ITicketServiceService, TicketServiceService>();
 // Service Price Service
 builder.Services.AddScoped<IServicePriceService, ServicePriceService>();
+// User Service
+builder.Services.AddScoped<IUserService, UserService>();
 
 // JWT Authentication
 var jwtKey = builder.Configuration["Jwt:Key"]!;

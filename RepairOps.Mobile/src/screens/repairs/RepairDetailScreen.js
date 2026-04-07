@@ -2,7 +2,7 @@ import { View, Text, ScrollView, TouchableOpacity, TextInput, StyleSheet } from 
 import { useState, useEffect } from 'react';
 import { getTicketById, updateStatus, addNote, getNotes } from '../../api/repairApi';
 import { useAuth } from '../../context/AuthContext';
-
+import { getTicketServices, addTicketService, removeTicketService, getTicketTotal, searchServicePrices } from '../../api/repairApi';
 const STATUSES = [
   'New Intake', 'Checked In', 'Diagnosing', 'Waiting for Part',
   'In Repair', 'Testing', 'Ready for Pickup', 'Completed', 'Cancelled'
@@ -17,6 +17,12 @@ export default function RepairDetailScreen({ route, navigation }) {
   const [newNote, setNewNote] = useState('');
   const [selectedStatus, setSelectedStatus] = useState('');
   const [loading, setLoading] = useState(true);
+  const [services, setServices] = useState([]);
+  const [ticketTotal, setTicketTotal] = useState(0);
+  const [serviceSearch, setServiceSearch] = useState({ brand: '', model: '' });
+  const [searchResults, setSearchResults] = useState([]);
+  const [customService, setCustomService] = useState({ description: '', price: '' });
+  const [showCustomForm, setShowCustomForm] = useState(false);
 
   useEffect(() => {
     Promise.all([getTicketById(ticketId), getNotes(ticketId)])
@@ -26,6 +32,7 @@ export default function RepairDetailScreen({ route, navigation }) {
         setNotes(notesRes.data);
       })
       .finally(() => setLoading(false));
+    loadServices();
   }, [ticketId]);
 
   const handleStatusUpdate = async (status) => {
@@ -40,6 +47,42 @@ export default function RepairDetailScreen({ route, navigation }) {
     setNotes([...notes, res.data]);
     setNewNote('');
   };
+  const loadServices = async () => {
+  const [servicesRes, totalRes] = await Promise.all([
+    getTicketServices(ticketId),
+    getTicketTotal(ticketId)
+    ]);
+    setServices(servicesRes.data);
+    setTicketTotal(totalRes.data);
+  };
+  const handleSearchServices = async () => {
+  const res = await searchServicePrices(serviceSearch.brand, serviceSearch.model);
+  setSearchResults(res.data);
+};
+
+const handleAddService = async (servicePriceId) => {
+  await addTicketService(ticketId, { servicePriceId, customDescription: '', customPrice: null });
+  setSearchResults([]);
+  setServiceSearch({ brand: '', model: '' });
+  await loadServices();
+};
+
+const handleAddCustomService = async () => {
+  if (!customService.description || !customService.price) return;
+  await addTicketService(ticketId, {
+    servicePriceId: null,
+    customDescription: customService.description,
+    customPrice: parseFloat(customService.price)
+  });
+  setCustomService({ description: '', price: '' });
+  setShowCustomForm(false);
+  await loadServices();
+};
+
+const handleRemoveService = async (serviceId) => {
+  await removeTicketService(serviceId);
+  await loadServices();
+};
 
   if (loading) return (
     <View style={styles.center}>
@@ -78,6 +121,78 @@ export default function RepairDetailScreen({ route, navigation }) {
           </TouchableOpacity>
         ))}
       </ScrollView>
+      {/* Services & Quote */}
+<Text style={styles.sectionTitle}>Services & Quote</Text>
+
+<View style={{ flexDirection: 'row', gap: 8, marginBottom: 10 }}>
+  <TextInput
+    style={[styles.input, { flex: 1 }]}
+    placeholder="Brand (e.g. Apple)"
+    value={serviceSearch.brand}
+    onChangeText={(v) => setServiceSearch({ ...serviceSearch, brand: v })}
+  />
+  <TextInput
+    style={[styles.input, { flex: 1 }]}
+    placeholder="Model (e.g. iPhone 14)"
+    value={serviceSearch.model}
+    onChangeText={(v) => setServiceSearch({ ...serviceSearch, model: v })}
+  />
+</View>
+<TouchableOpacity style={styles.button} onPress={handleSearchServices}>
+  <Text style={styles.buttonText}>Search Services</Text>
+</TouchableOpacity>
+
+{searchResults.map(s => (
+  <View key={s.id} style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#f3f4f6', padding: 10, borderRadius: 8, marginBottom: 8 }}>
+    <Text>{s.serviceName}</Text>
+    <Text>${s.price}</Text>
+    <TouchableOpacity
+      style={{ backgroundColor: '#2563eb', padding: 6, borderRadius: 4 }}
+      onPress={() => handleAddService(s.id)}
+    >
+      <Text style={{ color: 'white', fontSize: 12 }}>Add</Text>
+    </TouchableOpacity>
+  </View>
+))}
+
+<TouchableOpacity onPress={() => setShowCustomForm(!showCustomForm)}>
+  <Text style={{ color: '#2563eb', marginBottom: 10 }}>+ Special Order / Custom Price</Text>
+</TouchableOpacity>
+
+{showCustomForm && (
+  <View style={{ marginBottom: 10 }}>
+    <TextInput
+      style={styles.input}
+      placeholder="Description"
+      value={customService.description}
+      onChangeText={(v) => setCustomService({ ...customService, description: v })}
+    />
+    <TextInput
+      style={styles.input}
+      placeholder="Price"
+      value={customService.price}
+      onChangeText={(v) => setCustomService({ ...customService, price: v })}
+      keyboardType="numeric"
+    />
+    <TouchableOpacity style={styles.button} onPress={handleAddCustomService}>
+      <Text style={styles.buttonText}>Add Custom Service</Text>
+    </TouchableOpacity>
+  </View>
+)}
+
+{services.map(s => (
+  <View key={s.id} style={{ flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#f3f4f6', padding: 10, borderRadius: 8, marginBottom: 8 }}>
+    <Text style={{ flex: 1 }}>{s.serviceName}</Text>
+    <Text style={{ marginRight: 10 }}>${s.price}</Text>
+    <TouchableOpacity onPress={() => handleRemoveService(s.id)}>
+      <Text style={{ color: '#dc2626' }}>Remove</Text>
+    </TouchableOpacity>
+  </View>
+))}
+
+<View style={{ flexDirection: 'row', justifyContent: 'flex-end', borderTopWidth: 2, borderTopColor: '#1e3a5f', paddingTop: 10, marginBottom: 20 }}>
+  <Text style={{ fontSize: 18, fontWeight: 'bold' }}>Total: ${Number(ticketTotal).toFixed(2)}</Text>
+</View>
 
       <Text style={styles.sectionTitle}>Notes</Text>
       {notes.map((note) => (

@@ -7,6 +7,7 @@ import InventoryPage from './pages/inventory/InventoryPage';
 import AdminPage from './pages/admin/AdminPage';
 import ServicePricePage from './pages/admin/ServicePricePage';
 import ReportsPage from './pages/admin/ReportsPage';
+import UsersPage from './pages/admin/UsersPage';
 
 const ProtectedRoute = ({ children }) => {
   const { user } = useAuth();
@@ -53,6 +54,12 @@ function App() {
           <ReportsPage />
         </AdminRoute>
       } />
+      <Route path="/admin/users" element={
+        <AdminRoute>
+          <UsersPage />
+        </AdminRoute>
+      } />
+
     </Routes>
   );
 }

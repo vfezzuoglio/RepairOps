@@ -15,3 +15,7 @@ export const addTicketService = (repairTicketId, data) =>
 export const removeTicketService = (id) => api.delete(`/ticketservice/${id}`);
 export const getTicketTotal = (repairTicketId) => 
   api.get(`/ticketservice/${repairTicketId}/total`);
+// Users
+export const getAllUsers = () => api.get('/user');
+export const deleteUser = (id) => api.delete(`/user/${id}`);
+export const updateUserRole = (id, role) => api.put(`/user/${id}/role`, { role });
