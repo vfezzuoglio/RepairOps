@@ -73,16 +73,18 @@ useEffect(() => {
           <Text style={styles.headerSubtitle}>Welcome, {user?.fullName}</Text>
         </View>
         <View style={styles.headerActions}>
+        {(user?.role === 'SalesRep' || user?.role === 'Admin') && (
           <TouchableOpacity
             style={styles.newButton}
             onPress={() => navigation.navigate('NewIntake')}
           >
             <Text style={styles.newButtonText}>+ New Intake</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-            <Text style={styles.logoutText}>Logout</Text>
-          </TouchableOpacity>
-        </View>
+        )}
+        <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+          <Text style={styles.logoutText}>Logout</Text>
+        </TouchableOpacity>
+      </View>
       </View>
 
       {/* Stats Bar */}
