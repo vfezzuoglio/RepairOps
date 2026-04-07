@@ -2,7 +2,7 @@ import axios from 'axios';
 import * as SecureStore from 'expo-secure-store';
 
 const api = axios.create({
-  baseURL: 'https://isagogically-riftless-willette.ngrok-free.dev/api',
+  baseURL: 'http://192.168.1.50:5045/api',
 });
 
 api.interceptors.request.use(async (config) => {
