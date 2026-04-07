@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RepairOps.API.Data;
 
@@ -11,9 +12,11 @@ using RepairOps.API.Data;
 namespace RepairOps.API.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260407154835_AddCreatedByUser")]
+    partial class AddCreatedByUser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -226,70 +229,6 @@ namespace RepairOps.API.Migrations
                     b.ToTable("RepairTickets");
                 });
 
-            modelBuilder.Entity("RepairOps.API.Models.ServicePrice", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Brand")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("Model")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(10,2)");
-
-                    b.Property<string>("ServiceName")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ServicePrices");
-                });
-
-            modelBuilder.Entity("RepairOps.API.Models.TicketService", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime(6)");
-
-                    b.Property<string>("CustomDescription")
-                        .IsRequired()
-                        .HasColumnType("longtext");
-
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(10,2)");
-
-                    b.Property<int>("RepairTicketId")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("ServicePriceId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("RepairTicketId");
-
-                    b.HasIndex("ServicePriceId");
-
-                    b.ToTable("TicketServices");
-                });
-
             modelBuilder.Entity("RepairOps.API.Models.User", b =>
                 {
                     b.Property<int>("Id")
@@ -402,23 +341,6 @@ namespace RepairOps.API.Migrations
                     b.Navigation("Customer");
 
                     b.Navigation("Device");
-                });
-
-            modelBuilder.Entity("RepairOps.API.Models.TicketService", b =>
-                {
-                    b.HasOne("RepairOps.API.Models.RepairTicket", "RepairTicket")
-                        .WithMany()
-                        .HasForeignKey("RepairTicketId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("RepairOps.API.Models.ServicePrice", "ServicePrice")
-                        .WithMany()
-                        .HasForeignKey("ServicePriceId");
-
-                    b.Navigation("RepairTicket");
-
-                    b.Navigation("ServicePrice");
                 });
 #pragma warning restore 612, 618
         }

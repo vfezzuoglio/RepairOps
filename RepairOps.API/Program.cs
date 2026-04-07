@@ -38,6 +38,10 @@ builder.Services.AddScoped<IRepairTicketService, RepairTicketService>();
 builder.Services.AddScoped<IDeviceService, DeviceService>();
 // Inventory Service
 builder.Services.AddScoped<IInventoryService, InventoryService>();
+// Ticket Service Service
+builder.Services.AddScoped<ITicketServiceService, TicketServiceService>();
+// Service Price Service
+builder.Services.AddScoped<IServicePriceService, ServicePriceService>();
 
 // JWT Authentication
 var jwtKey = builder.Configuration["Jwt:Key"]!;

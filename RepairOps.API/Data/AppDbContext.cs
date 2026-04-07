@@ -16,6 +16,18 @@ namespace RepairOps.API.Data
         public DbSet<RepairNote> RepairNotes { get; set; }
         public DbSet<Part> Parts { get; set; }
         public DbSet<InventoryTransaction> InventoryTransactions { get; set; }
-    }
+        public DbSet<ServicePrice> ServicePrices { get; set; }
+        public DbSet<TicketService> TicketServices { get; set; }
 
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<ServicePrice>()
+                .Property(s => s.Price)
+                .HasColumnType("decimal(10,2)");
+
+            modelBuilder.Entity<TicketService>()
+                .Property(ts => ts.Price)
+                .HasColumnType("decimal(10,2)");
+        }
+    }
 }

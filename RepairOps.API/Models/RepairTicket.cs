@@ -1,3 +1,5 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace RepairOps.API.Models
 {
     public class RepairTicket
@@ -11,7 +13,12 @@ namespace RepairOps.API.Models
         public Device Device { get; set; } = null!;
 
         public int AssignedUserId { get; set; }
+        [ForeignKey("AssignedUserId")]
         public User AssignedUser { get; set; } = null!;
+
+        public int CreatedByUserId { get; set; }
+        [ForeignKey("CreatedByUserId")]
+        public User CreatedByUser { get; set; } = null!;
 
         public string Status { get; set; } = "New Intake";
         public string IssueDescription { get; set; } = string.Empty;
