@@ -11,15 +11,10 @@ export default function LoginScreen({ navigation }) {
 
 const handleLogin = async () => {
   try {
-    console.log('Attempting login with:', email, password);
     const response = await loginApi(email, password);
-    console.log('Response:', JSON.stringify(response.data));
     await login(response.data);
     navigation.replace('RepairQueue');
   } catch (error) {
-    console.log('Error:', JSON.stringify(error.response?.data));
-    console.log('Error status:', error.response?.status);
-    console.log('Error message:', error.message);
     setError('Invalid email or password');
   }
 };

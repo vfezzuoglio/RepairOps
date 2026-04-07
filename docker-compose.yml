@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: repairops_db
+    command: --lower-case-table-names=1
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: repairops
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./repairops_backup.sql:/docker-entrypoint-initdb.d/repairops_backup.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      timeout: 20s
+      retries: 10
+
+  api:
+    build:
+      context: ./RepairOps.API
+      dockerfile: Dockerfile
+    container_name: repairops_api
+    ports:
+      - "5045:8080"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Server=db;Port=3306;Database=repairops;User=root;Password=${MYSQL_ROOT_PASSWORD};
+      - Jwt__Key=${JWT_KEY}
+      - Jwt__Issuer=RepairOps
+      - Jwt__Audience=RepairOpsUsers
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  mysql_data:
