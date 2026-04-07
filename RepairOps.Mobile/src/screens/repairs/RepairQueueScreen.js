@@ -1,24 +1,43 @@
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, ScrollView, RefreshControl  } from 'react-native';
 import { useState, useEffect } from 'react';
 import { getAllTickets } from '../../api/repairApi';
 import { useAuth } from '../../context/AuthContext';
+import { useIsFocused } from '@react-navigation/native';
 
 export default function RepairQueueScreen({ navigation }) {
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('All');
   const { user, logout } = useAuth();
+  const isFocused = useIsFocused();
+  const [refreshing, setRefreshing] = useState(false);
 
-  useEffect(() => {
+useEffect(() => {
+  if (isFocused) {
+    setLoading(true);
     getAllTickets()
       .then(res => setTickets(res.data))
       .finally(() => setLoading(false));
-  }, []);
+
+    // Poll every 30 seconds
+    const interval = setInterval(() => {
+      getAllTickets().then(res => setTickets(res.data));
+    }, 30000);
+
+    return () => clearInterval(interval);
+  }
+}, [isFocused]);
 
   const handleLogout = async () => {
     await logout();
     navigation.replace('Login');
   };
+  const handleRefresh = async () => {
+  setRefreshing(true);
+  getAllTickets()
+    .then(res => setTickets(res.data))
+    .finally(() => setRefreshing(false));
+};
 
   const filteredTickets = filter === 'All'
     ? tickets
@@ -112,6 +131,9 @@ export default function RepairQueueScreen({ navigation }) {
         data={filteredTickets}
         keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={styles.listContent}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+        }
         renderItem={({ item }) => (
           <TouchableOpacity
             style={styles.card}
