@@ -10,5 +10,8 @@ namespace RepairOps.API.Interfaces
         Task<RepairTicketDto?> UpdateStatus(int id, UpdateRepairStatusDto request);
         Task<RepairNoteDto?> AddNote(int repairTicketId, CreateRepairNoteDto request);
         Task<List<RepairNoteDto>> GetNotes(int repairTicketId);
+
+        Task<List<RevenueReportDto>> GetRevenueReport();
+        
     }
 }

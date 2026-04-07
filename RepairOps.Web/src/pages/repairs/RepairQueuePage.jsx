@@ -30,6 +30,7 @@ return (
       <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
         <span>Welcome, {user?.fullName}</span>
         <button onClick={() => navigate('/inventory')}>Inventory</button>
+        <button onClick={() => navigate('/admin')}>Admin</button>
         <button onClick={handleLogout}>Logout</button>
       </div>
     </div>

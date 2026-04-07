@@ -65,6 +65,12 @@ namespace RepairOps.API.Controllers
             var results = await _repairTicketService.GetNotes(id);
             return Ok(results);
         }
+        [HttpGet("reports/revenue")]
+        public async Task<IActionResult> GetRevenueReport()
+        {
+            var report = await _repairTicketService.GetRevenueReport();
+            return Ok(report);
+        }
 
     }
 }

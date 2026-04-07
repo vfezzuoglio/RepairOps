@@ -16,6 +16,7 @@ export default function NewTicketScreen({ route, navigation }) {
         customerId: customer.id,
         deviceId: device.id,
         assignedUserId: assignedUserId,
+        createdByUserId: assignedUserId,
         issueDescription,
         intakeNotes
       });

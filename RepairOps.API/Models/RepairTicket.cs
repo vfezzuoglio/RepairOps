@@ -25,5 +25,6 @@ namespace RepairOps.API.Models
         public string IntakeNotes { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? UpdatedAt { get; set; }
+        public ICollection<TicketService> TicketServices { get; set; } = new List<TicketService>();
     }
 }

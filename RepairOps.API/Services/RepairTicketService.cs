@@ -25,7 +25,8 @@ namespace RepairOps.API.Services
                 IssueDescription = request.IssueDescription,
                 IntakeNotes = request.IntakeNotes,
                 Status = "New Intake",
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow,
+                CreatedByUserId = request.CreatedByUserId
             };
 
             _context.RepairTickets.Add(ticket);
@@ -140,5 +141,23 @@ namespace RepairOps.API.Services
                 })
                 .ToListAsync();
     }
+    public async Task<List<RevenueReportDto>> GetRevenueReport()
+{
+    var tickets = await _context.RepairTickets
+        .Include(t => t.CreatedByUser)
+        .Include(t => t.TicketServices)
+        .ToListAsync();
+
+    return tickets
+        .GroupBy(t => t.CreatedByUserId)
+        .Select(g => new RevenueReportDto
+        {
+            UserId = g.Key,
+            RepName = g.First().CreatedByUser.FullName,
+            TicketsCreated = g.Count(),
+            TotalRevenue = g.SelectMany(t => t.TicketServices).Sum(ts => ts.Price)
+        })
+        .ToList();
+}
 }
 }

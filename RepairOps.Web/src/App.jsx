@@ -4,6 +4,9 @@ import LoginPage from './pages/auth/LoginPage';
 import RepairQueuePage from './pages/repairs/RepairQueuePage';
 import RepairDetailPage from './pages/repairs/RepairDetailPage';
 import InventoryPage from './pages/inventory/InventoryPage';
+import AdminPage from './pages/admin/AdminPage';
+import ServicePricePage from './pages/admin/ServicePricePage';
+import ReportsPage from './pages/admin/ReportsPage';
 
 const ProtectedRoute = ({ children }) => {
   const { user } = useAuth();
@@ -29,6 +32,21 @@ function App() {
           <InventoryPage />
         </ProtectedRoute>
       } />
+      <Route path="/admin" element={
+  <ProtectedRoute>
+    <AdminPage />
+  </ProtectedRoute>
+} />
+<Route path="/admin/services" element={
+  <ProtectedRoute>
+    <ServicePricePage />
+  </ProtectedRoute>
+} />
+<Route path="/admin/reports" element={
+  <ProtectedRoute>
+    <ReportsPage />
+  </ProtectedRoute>
+} />
     </Routes>
   );
 }

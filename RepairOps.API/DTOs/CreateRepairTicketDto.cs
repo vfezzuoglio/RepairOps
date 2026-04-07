@@ -7,6 +7,7 @@ namespace RepairOps.API.DTOs
         public int AssignedUserId { get; set; }
         public string IssueDescription { get; set; } = string.Empty;
         public string IntakeNotes { get; set; } = string.Empty;
+        public int CreatedByUserId { get; set; }
         
     }
 }
