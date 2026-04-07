@@ -32,6 +32,7 @@ namespace RepairOps.API.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> CreateServicePrice(CreateServicePriceDto request)
         {
             var result = await _servicePriceService.CreateServicePrice(request);
@@ -39,6 +40,7 @@ namespace RepairOps.API.Controllers
         }
 
         [HttpDelete("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteServicePrice(int id)
         {
             var result = await _servicePriceService.DeleteServicePrice(id);

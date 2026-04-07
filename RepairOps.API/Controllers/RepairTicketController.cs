@@ -66,6 +66,7 @@ namespace RepairOps.API.Controllers
             return Ok(results);
         }
         [HttpGet("reports/revenue")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetRevenueReport()
         {
             var report = await _repairTicketService.GetRevenueReport();

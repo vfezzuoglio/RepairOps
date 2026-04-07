@@ -12,6 +12,12 @@ const ProtectedRoute = ({ children }) => {
   const { user } = useAuth();
   return user ? children : <Navigate to="/login" />;
 };
+const AdminRoute = ({ children }) => {
+  const { user } = useAuth();
+  if (!user) return <Navigate to="/login" />;
+  if (user.role !== 'Admin') return <Navigate to="/" />;
+  return children;
+};
 
 function App() {
   return (
@@ -33,20 +39,20 @@ function App() {
         </ProtectedRoute>
       } />
       <Route path="/admin" element={
-  <ProtectedRoute>
-    <AdminPage />
-  </ProtectedRoute>
-} />
-<Route path="/admin/services" element={
-  <ProtectedRoute>
-    <ServicePricePage />
-  </ProtectedRoute>
-} />
-<Route path="/admin/reports" element={
-  <ProtectedRoute>
-    <ReportsPage />
-  </ProtectedRoute>
-} />
+        <AdminRoute>
+          <AdminPage />
+        </AdminRoute>
+      } />
+      <Route path="/admin/services" element={
+        <AdminRoute>
+          <ServicePricePage />
+        </AdminRoute>
+      } />
+      <Route path="/admin/reports" element={
+        <AdminRoute>
+          <ReportsPage />
+        </AdminRoute>
+      } />
     </Routes>
   );
 }
