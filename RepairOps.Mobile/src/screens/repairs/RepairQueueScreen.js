@@ -1,4 +1,4 @@
-import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { useState, useEffect } from 'react';
 import { getAllTickets } from '../../api/repairApi';
 import { useAuth } from '../../context/AuthContext';
@@ -6,6 +6,7 @@ import { useAuth } from '../../context/AuthContext';
 export default function RepairQueueScreen({ navigation }) {
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [filter, setFilter] = useState('All');
   const { user, logout } = useAuth();
 
   useEffect(() => {
@@ -18,6 +19,10 @@ export default function RepairQueueScreen({ navigation }) {
     await logout();
     navigation.replace('Login');
   };
+
+  const filteredTickets = filter === 'All'
+    ? tickets
+    : tickets.filter(t => t.status === filter);
 
   const getStatusColor = (status) => {
     switch (status) {
@@ -87,9 +92,24 @@ export default function RepairQueueScreen({ navigation }) {
         </View>
       </View>
 
+      {/* Filter Bar */}
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterBar}>
+        {['All', 'New Intake', 'Checked In', 'Diagnosing', 'Waiting for Part', 'In Repair', 'Testing', 'Ready for Pickup', 'Completed', 'Cancelled'].map((s) => (
+          <TouchableOpacity
+            key={s}
+            style={[styles.filterButton, filter === s && styles.filterButtonActive]}
+            onPress={() => setFilter(s)}
+          >
+            <Text style={[styles.filterButtonText, filter === s && styles.filterButtonTextActive]}>
+              {s}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+
       {/* Ticket List */}
       <FlatList
-        data={tickets}
+        data={filteredTickets}
         keyExtractor={(item) => item.id.toString()}
         contentContainerStyle={styles.listContent}
         renderItem={({ item }) => (
@@ -118,7 +138,6 @@ const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: '#f1f5f9' },
   center: { flex: 1, justifyContent: 'center', alignItems: 'center' },
 
-  // Header
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -136,7 +155,6 @@ const styles = StyleSheet.create({
   logoutButton: { paddingHorizontal: 12, paddingVertical: 10 },
   logoutText: { color: '#fca5a5', fontSize: 14 },
 
-  // Stats
   statsBar: {
     flexDirection: 'row',
     backgroundColor: 'white',
@@ -149,7 +167,12 @@ const styles = StyleSheet.create({
   statNumber: { fontSize: 22, fontWeight: 'bold', color: '#1e3a5f' },
   statLabel: { fontSize: 12, color: '#6b7280', marginTop: 2 },
 
-  // Cards
+  filterBar: { paddingHorizontal: 16, paddingVertical: 10, backgroundColor: 'white' },
+  filterButton: { paddingHorizontal: 14, paddingVertical: 7, borderRadius: 20, borderWidth: 1, borderColor: '#cbd5e1', marginRight: 8 },
+  filterButtonActive: { backgroundColor: '#1e3a5f', borderColor: '#1e3a5f' },
+  filterButtonText: { color: '#475569', fontSize: 13 },
+  filterButtonTextActive: { color: 'white' },
+
   listContent: { padding: 16 },
   card: {
     backgroundColor: 'white',
